@@ -1,0 +1,63 @@
+---
+title: "Worlds Top Restaurants"
+author: "P.Z"
+date: "1/10/2021"
+output: html_document
+---
+## Description
+This webpage will represent a map with worlds top 50 restaurant. The data is orriginally from: https://www.kaggle.com/mmayur/the-worlds-50-best-restaurants
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load packages
+
+```{r}
+library(leaflet)
+library(htmltools)
+```
+
+## Load data
+
+Reading data from downloaded csv file
+
+```{r}
+dt <- read.csv(file= "TheWorlds50BestRestaurants2018.csv", header = TRUE, sep= ",")
+```
+
+
+## Preparing data
+
+```{r}
+dtf <- data.frame(Ranking = dt$Ranking,
+                     Name = dt$Name,
+                     City = dt$City,
+                     Country = dt$Country,
+                     Latitude = dt$Latitude,
+                     Longitude = dt$Longitude
+                     )
+```
+
+
+## Creating map
+
+```{r}
+mp <- dtf %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(popup=paste
+             ("<br>Country: ", 
+               htmlEscape(dtf$Country), 
+              "<br>City: ", 
+               htmlEscape(dtf$City), 
+              "<br>Restaurant: ", 
+               htmlEscape(dtf$Name),
+              "<br>Ranking: ",
+               formatC(dtf$Ranking, format = "d", big.mark = ",")
+              ) 
+            )
+
+mp
+```
+
